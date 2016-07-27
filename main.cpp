@@ -110,7 +110,7 @@ int main(int argc, char const *argv[]) {
     
     //définition de la police
     sf::Font font;
-    if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/ping-pong/ping-pong/font.ttf")) {
+    if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/font.ttf")) {
         std::cout << "Erreur du chargement de la police...Fermeture du jeu !" << std::endl;
         return EXIT_FAILURE;
     }
@@ -140,8 +140,6 @@ int main(int argc, char const *argv[]) {
          state_balle_y);
     app.close();
     
-    
->>>>>>> main
     return 0;
 }
 
