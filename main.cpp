@@ -91,8 +91,7 @@ void setWarning(sf::Text & text);
 */
 
 int main(int argc, char const *argv[]) {
-    
-    //enter coder here
+    //enter code here
     return 0;
 }
 
