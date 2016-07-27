@@ -91,7 +91,57 @@ void setWarning(sf::Text & text);
 */
 
 int main(int argc, char const *argv[]) {
-    //enter code here
+    //déclaration des variables "constantes" de paramètres de jeu
+    const int   BALL_SIZE_INIT(50),
+    BALL_SPEED_INIT(1),
+    SPEED_PADDLE_INIT(100),
+    PADDLE_HEIGHT_INIT(500),
+    PADDLE_WIDTH_INIT(20);
+    
+    const sf::Vector2i  WINDOW_SIZE(2500, 1500),
+    BALL_POS_INIT(WINDOW_SIZE.x / 2, WINDOW_SIZE.y / 2);
+    
+    const sf::Vector2f  LEFT_PADDLE_POS_INIT(0, WINDOW_SIZE.y / 2 - PADDLE_WIDTH_INIT),
+    RIGHT_PADDLE_POS_INIT(WINDOW_SIZE.x - PADDLE_WIDTH_INIT, WINDOW_SIZE.y / 2 - PADDLE_HEIGHT_INIT / 2);
+    
+    bool    state_ball_x(false),
+    state_balle_y(false);
+    
+    
+    //définition de la police
+    sf::Font font;
+    if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/ping-pong/ping-pong/font.ttf")) {
+        std::cout << "Erreur du chargement de la police...Fermeture du jeu !" << std::endl;
+        return EXIT_FAILURE;
+    }
+    
+    //paramètre de sélection du joueur :
+    //  true : joueur 1 donc gère les calculs
+    //  false
+    const bool superPlayer(true);
+    
+    //création de la fenêtre
+    sf::RenderWindow app(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Ping - Pong", sf::Style::Default);
+    sf::Event event;
+    
+    menu(app,
+         WINDOW_SIZE,
+         event,
+         font,
+         BALL_SIZE_INIT,
+         BALL_SPEED_INIT,
+         SPEED_PADDLE_INIT,
+         PADDLE_HEIGHT_INIT,
+         PADDLE_WIDTH_INIT,
+         BALL_POS_INIT,
+         LEFT_PADDLE_POS_INIT,
+         RIGHT_PADDLE_POS_INIT,
+         state_ball_x,
+         state_balle_y);
+    app.close();
+    
+    
+>>>>>>> main
     return 0;
 }
 
