@@ -12,6 +12,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
+#include "Ball.hpp"
+#include "bar.hpp"
+#include "collision_manager.hpp"
 
 int main(int argc, char const *argv[]) {
     //enter coder here
