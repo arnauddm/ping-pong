@@ -8,7 +8,7 @@ Le jeu comme son nom l'indique est un jeu de Ping - Pong inspiré du célèbre j
 
 Étant étudiant en Génie Électrique et Informatique Industrielle nous avions un projet tuteuré, j'ai donc choisi celui - ci dont la consigne était de développer un jeu (au choix) en réseau (avec le protocole choisi). La seule interdiction était d'utiliser un moteur graphique qui simplifierait trop le développement.
 
-##Comment est - il développé le jeu ?
+##Comment le jeu est - il développé ?
 
 Le jeu est développé en C++ à l'aide de la librairie SFML qui me permet de gérer :
 
