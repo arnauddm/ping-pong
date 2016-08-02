@@ -10,9 +10,10 @@
 #define tcpSockets_hpp
 
 #include <stdio.h>
+#include <SFML/Network.hpp>
 
-class tcpSockets {
-    
+class tcpSockets : public sf::TcpSocket {
+    TcpSocket();
 };
 
 #endif /* tcpSockets_hpp */

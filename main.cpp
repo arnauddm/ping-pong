@@ -12,6 +12,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
+#include <ctime>
+#include <iomanip>
 #include "Ball.hpp"
 #include "bar.hpp"
 #include "collision_manager.hpp"
@@ -79,6 +81,10 @@ void setDanger(sf::Text & text);
 void setYellow(sf::Text & text);
 
 void setWarning(sf::Text & text);
+
+sf::String getTimer(unsigned long timeStart, unsigned long nowTime);
+
+std::string setTwoDigits(unsigned int number);
 
 
 /*  -------------------------------------------------
@@ -629,13 +635,21 @@ void game(sf::RenderWindow& app,
     sf::Text title = createText("Ping - Pong",
                                 sf::Vector2f(WINDOW_SIZE.x / 3, WINDOW_SIZE.y / 6),
                                 font,
-                                200
-                                );
+                                200);
+    
+    sf::Text timer = createText("",
+                               sf::Vector2f(WINDOW_SIZE.x / 3, WINDOW_SIZE.y / 1.3),
+                               font,
+                               75);
     
     //variable de contrôle de la structure du jeu
     bool running(true);
     int score_player_1,
-    score_player_2;
+        score_player_2;
+    
+    //variable de temps de départ pour le comptage du temps de jeu
+    unsigned long timeStart(time(NULL));
+    
     
     while(running || score_player_1 != score_limit || score_player_2 != score_limit) {
         while(app.pollEvent(event)) {
@@ -717,15 +731,56 @@ void game(sf::RenderWindow& app,
             posYBall -= BALL_SPEED;
         }
         
+        timer.setString(getTimer(timeStart, time(NULL)));
+        
         app.clear();
         app.draw(ball);
         app.draw(LeftPaddle);
         app.draw(RightPaddle);
         app.draw(title);
+        app.draw(timer);
         app.display();
     }
     
     //affectation de la position du paddle de gauche
     LeftPaddle.setPosition(posYLeftPaddle);
     
+}
+
+sf::String getTimer(unsigned long timeStart, unsigned long nowTime) {
+    unsigned int secondes(nowTime - timeStart);
+    unsigned int minutes(0);
+    unsigned int hours(0);
+    
+    //test des secondes
+    if(secondes > 60) {
+        //ajout des minutes
+        while (secondes >= 60) {
+            minutes++;
+            secondes -= 60;
+        }
+    }
+    
+    //test des minutes
+    if(minutes > 60) {
+        //ajout des heures
+        while (minutes >= 60) {
+            hours++;
+            minutes -= 60;
+        }
+    }
+    
+    
+    return sf::String(setTwoDigits(hours) + ":" + setTwoDigits(minutes) + ":" + setTwoDigits(secondes));
+}
+
+std::string setTwoDigits(unsigned int number) {
+    std::string value;
+    if(number < 10) {
+        value = "0" + std::to_string(number);
+    }
+    else {
+        value = std::to_string(number);
+    }
+    return value;
 }
