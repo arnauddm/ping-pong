@@ -84,7 +84,7 @@ void setWarning(sf::Text & text);
 
 sf::String getTimer(unsigned long timeStart, unsigned long nowTime);
 
-std::string setTwoDigits(unsigned int number);
+sf::String setTwoDigits(unsigned int number);
 
 
 /*  -------------------------------------------------
@@ -774,13 +774,13 @@ sf::String getTimer(unsigned long timeStart, unsigned long nowTime) {
     return sf::String(setTwoDigits(hours) + ":" + setTwoDigits(minutes) + ":" + setTwoDigits(secondes));
 }
 
-std::string setTwoDigits(unsigned int number) {
-    std::string value;
+sf::String setTwoDigits(unsigned int number) {
+    sf::String value;
     if(number < 10) {
-        value = "0" + std::to_string(number);
+        value = "0" + toString(number);
     }
     else {
-        value = std::to_string(number);
+        value = toString(number);
     }
     return value;
 }
