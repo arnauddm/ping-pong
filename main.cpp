@@ -677,14 +677,14 @@ void game(sf::RenderWindow& app,
         
         LeftPaddle.setPosition(posYLeftPaddle);
         //différents test pour détecter une collision
-        if ((posXBall == 0 && (posYBall < posYLeftPaddle || posYBall > posYLeftPaddle + PADDLE_HEIGHT)) || sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+        if ((posXBall <= 0 && (posYBall < posYLeftPaddle || posYBall > posYLeftPaddle + PADDLE_HEIGHT)) || sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
             sleep(1);
             ball.restart(WINDOW_SIZE);
             posXBall = WINDOW_SIZE.x / 2;
             posYBall = WINDOW_SIZE.y / 2;
         }
         
-        if(posXBall == WINDOW_SIZE.x - 2*BALL_SIZE || (posXBall + PADDLE_WIDTH == 0 && (posYBall > posYLeftPaddle || posYBall + BALL_SIZE / 2 > posYLeftPaddle) && (posYBall < posYLeftPaddle + PADDLE_HEIGHT || posYBall + BALL_SIZE / 2 < posYLeftPaddle + PADDLE_HEIGHT))) {
+        if(posXBall >= WINDOW_SIZE.x - 2*BALL_SIZE || (posXBall + PADDLE_WIDTH <= 0 && (posYBall > posYLeftPaddle || posYBall + BALL_SIZE / 2 > posYLeftPaddle) && (posYBall < posYLeftPaddle + PADDLE_HEIGHT || posYBall + BALL_SIZE / 2 < posYLeftPaddle + PADDLE_HEIGHT))) {
             ball.ReverseX();
             ball.MoveX();
             if (state_ball_x == true) {
@@ -710,7 +710,7 @@ void game(sf::RenderWindow& app,
         //ColliManager.ManagerCollisionY(BALL_SIZE, posXBall, posYBall, posYLeftPaddle, PADDLE_HEIGHT, PADDLE_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH);
         //ColliManager.ManagerCollisionY(BALL_SIZE, posXBall, posYBall, posYRightPaddle, PADDLE_HEIGHT, PADDLE_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH);
         
-        if (posYBall == WINDOW_SIZE.y - 2*BALL_SIZE || posYBall < 1) {
+        if (posYBall >= WINDOW_SIZE.y - 2*BALL_SIZE || posYBall < 1) {
             ball.ReverseY();
             ball.MoveY();
             if (state_ball_y == true) {
