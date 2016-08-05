@@ -682,6 +682,7 @@ void game(sf::RenderWindow& app,
             ball.restart(WINDOW_SIZE);
             posXBall = WINDOW_SIZE.x / 2;
             posYBall = WINDOW_SIZE.y / 2;
+            timeStart = time(NULL);
         }
         
         if(posXBall >= WINDOW_SIZE.x - 2*BALL_SIZE || (posXBall + PADDLE_WIDTH <= 0 && (posYBall > posYLeftPaddle || posYBall + BALL_SIZE / 2 > posYLeftPaddle) && (posYBall < posYLeftPaddle + PADDLE_HEIGHT || posYBall + BALL_SIZE / 2 < posYLeftPaddle + PADDLE_HEIGHT))) {
