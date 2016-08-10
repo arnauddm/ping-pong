@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <ctime>
 #include <iomanip>
+#include <SFML/Audio.hpp>
 #include "Ball.hpp"
 #include "bar.hpp"
 #include "collision_manager.hpp"
@@ -626,11 +627,23 @@ void game(sf::RenderWindow& app,
     int posXLeftPaddle(LEFT_PADDLE_POS_INIT.x), posYLeftPaddle(LEFT_PADDLE_POS_INIT.y);
     int posXRightPaddle(RIGHT_PADDLE_POS_INIT.x), posYRightPaddle(RIGHT_PADDLE_POS_INIT.y);
     
+    //variable de score
+    int score1(0), score2(0);
+    
     //création des différents objets
     Ball ball(BALL_POS_INIT, BALL_SIZE, BALL_SPEED);
     Bar LeftPaddle(LEFT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     Bar RightPaddle(RIGHT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     
+    
+    //creation de la musique
+    sf::Music musique;
+    if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/Sandstorm.ogg")) {
+        std::cout << "Le chargement de la musique a échoué." << std::endl;
+        return EXIT_FAILURE;
+    }
+    musique.play();
+    musique.setLoop(true);
     
     sf::Text title = createText("Ping - Pong",
                                 sf::Vector2f(WINDOW_SIZE.x / 3, WINDOW_SIZE.y / 6),
@@ -641,6 +654,16 @@ void game(sf::RenderWindow& app,
                                sf::Vector2f(WINDOW_SIZE.x / 3, WINDOW_SIZE.y / 1.3),
                                font,
                                75);
+    
+    sf::Text scorePlayer1 = createText("",
+                                       sf::Vector2f(100, 100),
+                                       font,
+                                       75);
+    
+    sf::Text scorePlayer2 = createText("",
+                                       sf::Vector2f(WINDOW_SIZE.x - 100, 100),
+                                       font,
+                                       75);
     
     //variable de contrôle de la structure du jeu
     bool running(true);
@@ -677,12 +700,22 @@ void game(sf::RenderWindow& app,
         
         LeftPaddle.setPosition(posYLeftPaddle);
         //différents test pour détecter une collision
-        if ((posXBall <= 0 && (posYBall < posYLeftPaddle || posYBall > posYLeftPaddle + PADDLE_HEIGHT)) || sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+        if ((posXBall <= 0 && (posYBall < posYLeftPaddle || posYBall > posYLeftPaddle + PADDLE_HEIGHT))) {
             sleep(1);
             ball.restart(WINDOW_SIZE);
             posXBall = WINDOW_SIZE.x / 2;
             posYBall = WINDOW_SIZE.y / 2;
+            score2++;
+        }
+        
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+            ball.restart(WINDOW_SIZE);
+            posXBall = WINDOW_SIZE.x / 2;
+            posYBall = WINDOW_SIZE.y / 2;
             timeStart = time(NULL);
+            score1 = 0;
+            score2 = 0;
+            sleep(1);
         }
         
         if(posXBall >= WINDOW_SIZE.x - 2*BALL_SIZE || (posXBall + PADDLE_WIDTH <= 0 && (posYBall > posYLeftPaddle || posYBall + BALL_SIZE / 2 > posYLeftPaddle) && (posYBall < posYLeftPaddle + PADDLE_HEIGHT || posYBall + BALL_SIZE / 2 < posYLeftPaddle + PADDLE_HEIGHT))) {
@@ -733,6 +766,8 @@ void game(sf::RenderWindow& app,
         }
         
         timer.setString(getTimer(timeStart, time(NULL)));
+        scorePlayer1.setString(toString(score1));
+        scorePlayer2.setString(toString(score2));
         
         app.clear();
         app.draw(ball);
@@ -740,12 +775,11 @@ void game(sf::RenderWindow& app,
         app.draw(RightPaddle);
         app.draw(title);
         app.draw(timer);
+        app.draw(scorePlayer1);
+        app.draw(scorePlayer2);
         app.display();
+        musique.play();
     }
-    
-    //affectation de la position du paddle de gauche
-    LeftPaddle.setPosition(posYLeftPaddle);
-    
 }
 
 sf::String getTimer(unsigned long timeStart, unsigned long nowTime) {
