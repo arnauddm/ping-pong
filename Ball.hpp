@@ -23,6 +23,7 @@ public:
     void ReverseX();
     void ReverseY();
     void restart(sf::Vector2i WindowSize);
+    void setSpeed(unsigned int speed);
     int mySize,
     myDX,
     myDY,

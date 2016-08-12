@@ -16,10 +16,16 @@ Ball::Ball(sf::Vector2i position,
 }
 
 void Ball::MoveX() {
+    /*for (int i(0) ; i != myDX ; i++) {
+        ball.move(1, 0);
+    }*/
     ball.move(myDX, 0);
 }
 
 void Ball::MoveY() {
+    /*for (int j(0) ; j != myDY ; j++) {
+        ball.move(0, 1);
+    }*/
     ball.move(0, myDY);
 }
 
@@ -33,4 +39,10 @@ void Ball::ReverseY() {
 
 void Ball::restart(sf::Vector2i WindowSize) {
     ball.setPosition(WindowSize.x / 2, WindowSize.y / 2);
+}
+
+void Ball::setSpeed(unsigned int speed) {
+    mySpeed = speed;
+    myDX = mySpeed;
+    myDY = mySpeed;
 }

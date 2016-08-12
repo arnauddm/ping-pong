@@ -635,6 +635,9 @@ void game(sf::RenderWindow& app,
     Bar LeftPaddle(LEFT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     Bar RightPaddle(RIGHT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     
+    //variable concernant le nombre de bounce
+    int counterBounce(0);
+    
     
     //creation de la musique
     sf::Music musique;
@@ -642,8 +645,10 @@ void game(sf::RenderWindow& app,
         std::cout << "Le chargement de la musique a échoué." << std::endl;
         return EXIT_FAILURE;
     }
-    musique.play();
+    musique.setVolume(100);
+    musique.setRelativeToListener(true);
     musique.setLoop(true);
+    musique.play();
     
     sf::Text title = createText("Ping - Pong",
                                 sf::Vector2f(WINDOW_SIZE.x / 3, WINDOW_SIZE.y / 6),
@@ -718,7 +723,7 @@ void game(sf::RenderWindow& app,
             sleep(1);
         }
         
-        if(posXBall >= WINDOW_SIZE.x - 2*BALL_SIZE || (posXBall + PADDLE_WIDTH <= 0 && (posYBall > posYLeftPaddle || posYBall + BALL_SIZE / 2 > posYLeftPaddle) && (posYBall < posYLeftPaddle + PADDLE_HEIGHT || posYBall + BALL_SIZE / 2 < posYLeftPaddle + PADDLE_HEIGHT))) {
+        if(posXBall >= WINDOW_SIZE.x - 2 * BALL_SIZE || (posXBall + PADDLE_WIDTH <= 0 && (posYBall > posYLeftPaddle || posYBall + BALL_SIZE / 2 > posYLeftPaddle) && (posYBall < posYLeftPaddle + PADDLE_HEIGHT || posYBall + BALL_SIZE / 2 < posYLeftPaddle + PADDLE_HEIGHT))) {
             ball.ReverseX();
             ball.MoveX();
             if (state_ball_x == true) {
@@ -727,6 +732,7 @@ void game(sf::RenderWindow& app,
             else {
                 state_ball_x = true;
             }
+            counterBounce++;
         }
         else {
             ball.MoveX();
@@ -739,7 +745,7 @@ void game(sf::RenderWindow& app,
             posXBall -= BALL_SPEED;
         }
         
-        std::cout << " y : " << ball.myDY << " " << posYBall <<std::endl;
+        std::cout << posXBall << "   " << posYBall << std::endl;
         sleep(0.5);
         //ColliManager.ManagerCollisionY(BALL_SIZE, posXBall, posYBall, posYLeftPaddle, PADDLE_HEIGHT, PADDLE_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH);
         //ColliManager.ManagerCollisionY(BALL_SIZE, posXBall, posYBall, posYRightPaddle, PADDLE_HEIGHT, PADDLE_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH);
@@ -765,6 +771,12 @@ void game(sf::RenderWindow& app,
             posYBall -= BALL_SPEED;
         }
         
+        /*if(counterBounce == 2 * BALL_SPEED) {
+            BALL_SPEED++;
+            ball.setSpeed(BALL_SPEED);
+            counterBounce = 0;
+        }*/
+        
         timer.setString(getTimer(timeStart, time(NULL)));
         scorePlayer1.setString(toString(score1));
         scorePlayer2.setString(toString(score2));
@@ -778,7 +790,6 @@ void game(sf::RenderWindow& app,
         app.draw(scorePlayer1);
         app.draw(scorePlayer2);
         app.display();
-        musique.play();
     }
 }
 
