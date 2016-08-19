@@ -117,9 +117,12 @@ int main(int argc, char const *argv[]) {
     
     //définition de la police
     sf::Font font;
-    if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/font.ttf")) {
-        std::cout << "Erreur du chargement de la police...Fermeture du jeu !" << std::endl;
-        return EXIT_FAILURE;
+    if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/user/font/font.ttf")) {
+        std::cout << "Aucune police personnelles sous le nom de 'font.ttf' n'a été trouvée. Chargement de la police par défaut" << std::endl;
+        if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/src/font/font.ttf")) {
+            std::cout << "Police par défaut non trouvée, fermeture du jeu" << std::endl;
+            return EXIT_FAILURE;
+        }
     }
     
     //paramètre de sélection du joueur :
@@ -641,7 +644,7 @@ void game(sf::RenderWindow& app,
     
     //creation de la musique
     sf::Music musique;
-    if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/Sandstorm.ogg")) {
+    if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/src/music/Sandstorm.ogg")) {
         std::cout << "Le chargement de la musique a échoué." << std::endl;
         return EXIT_FAILURE;
     }
