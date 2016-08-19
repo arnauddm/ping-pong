@@ -15,6 +15,7 @@
 #include <ctime>
 #include <iomanip>
 #include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
 #include "Ball.hpp"
 #include "bar.hpp"
 #include "collision_manager.hpp"
@@ -87,6 +88,9 @@ sf::String getTimer(unsigned long timeStart, unsigned long nowTime);
 
 sf::String setTwoDigits(unsigned int number);
 
+int getRand(int mini,
+            int maxi);
+
 
 /*  -------------------------------------------------
     *************************************************
@@ -98,6 +102,9 @@ sf::String setTwoDigits(unsigned int number);
 */
 
 int main(int argc, char const *argv[]) {
+    //initialisation du random pour les nombres aléatoires
+    srand(time(NULL));
+    
     //déclaration des variables "constantes" de paramètres de jeu
     const int   BALL_SIZE_INIT(50),
     BALL_SPEED_INIT(1),
@@ -111,8 +118,11 @@ int main(int argc, char const *argv[]) {
     const sf::Vector2f  LEFT_PADDLE_POS_INIT(0, WINDOW_SIZE.y / 2 - PADDLE_WIDTH_INIT),
     RIGHT_PADDLE_POS_INIT(WINDOW_SIZE.x - PADDLE_WIDTH_INIT, WINDOW_SIZE.y / 2 - PADDLE_HEIGHT_INIT / 2);
     
-    bool    state_ball_x(false),
-    state_balle_y(false);
+    bool state_ball_x(getRand(0, 1)), state_balle_y(getRand(0, 1));
+    
+    //variable concernant le réseau
+    const unsigned short port(3600);
+    const sf::IpAddress adress("127.0.0.1"); //no place lol
     
     
     //définition de la police
@@ -130,6 +140,18 @@ int main(int argc, char const *argv[]) {
     //création de la fenêtre
     sf::RenderWindow app(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Ping - Pong", sf::Style::Default);
     sf::Event event;
+    
+    //création des éléments réseaux
+    if(superPlayer) {
+        sf::TcpListener server;
+        sf::TcpSocket socket;
+        server.listen(port);
+        server.accept(socket);
+    }
+    else {
+        sf::TcpSocket socket;
+        socket.connect(adress, port);
+    }
     
     menu(app,
          WINDOW_SIZE,
@@ -829,4 +851,19 @@ sf::String setTwoDigits(unsigned int number) {
         value = toString(number);
     }
     return value;
+}
+
+
+/*  -------------------------------------------------
+    *************************************************
+ 
+            FONCTION GAME
+ 
+    *************************************************
+    -------------------------------------------------
+*/
+
+int getRand(int mini,
+            int maxi) {
+    return rand() % (maxi - mini) + mini;
 }
