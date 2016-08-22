@@ -167,6 +167,7 @@ int main(int argc, char const *argv[]) {
          RIGHT_PADDLE_POS_INIT,
          state_ball_x,
          state_balle_y);
+    
     app.close();
     
     return 0;
