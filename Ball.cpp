@@ -15,6 +15,10 @@ Ball::Ball(sf::Vector2i position,
     ball.setPosition(position.x, position.y);
 }
 
+Ball::~Ball() {
+    //delete this;
+}
+
 void Ball::MoveX() {
     /*for (int i(0) ; i != myDX ; i++) {
         ball.move(1, 0);

@@ -33,7 +33,8 @@ void menu(sf::RenderWindow & app,
           const sf::Vector2f LEFT_PADDLE_POS_INIT,
           const sf::Vector2f RIGHT_PADDLE_POS_INIT,
           const bool state_bool_x,
-          const bool state_bool_y);
+          const bool state_bool_y,
+          const bool superPlayer);
 
 void game(sf::RenderWindow& app,
           sf::Event event,
@@ -49,7 +50,8 @@ void game(sf::RenderWindow& app,
           int SPEED_PADDLE_INIT,
           bool state_ball_x,
           bool state_ball_y,
-          const int score_limit);
+          const int score_limit,
+          const bool superPlayer);
 
 void parameter(sf::RenderWindow & app,
                sf::Event & event,
@@ -64,7 +66,8 @@ void parameter(sf::RenderWindow & app,
                const sf::Vector2f LEFT_PADDLE_POS_INIT,
                const sf::Vector2f RIGHT_PADDLE_POS_INIT,
                const bool state_ball_x,
-               const bool state_ball_y);
+               const bool state_ball_y,
+               const bool superPlayer);
 
 sf::Text createText(const sf::String & content,
                     const sf::Vector2f & position,
@@ -147,7 +150,8 @@ int main(int argc, char const *argv[]) {
          LEFT_PADDLE_POS_INIT,
          RIGHT_PADDLE_POS_INIT,
          state_ball_x,
-         state_balle_y);
+         state_balle_y,
+         superPlayer);
     app.close();
     
     return 0;
@@ -227,7 +231,8 @@ void menu(sf::RenderWindow & app,
           const sf::Vector2f LEFT_PADDLE_POS_INIT,
           const sf::Vector2f RIGHT_PADDLE_POS_INIT,
           const bool state_bool_x,
-          const bool state_bool_y) {
+          const bool state_bool_y,
+          const bool superPlayer) {
     
     //variable de choix au niveau du menu
     int choice(1);
@@ -298,7 +303,8 @@ void menu(sf::RenderWindow & app,
                                   LEFT_PADDLE_POS_INIT,
                                   RIGHT_PADDLE_POS_INIT,
                                   state_bool_x,
-                                  state_bool_y);
+                                  state_bool_y,
+                                  superPlayer);
                         break;
                         
                     case 2: //fermeture de la fermeture
@@ -367,7 +373,8 @@ void parameter(sf::RenderWindow & app,
                const sf::Vector2f LEFT_PADDLE_POS_INIT,
                const sf::Vector2f RIGHT_PADDLE_POS_INIT,
                const bool state_ball_x,
-               const bool state_ball_y) {
+               const bool state_ball_y,
+               const bool superPlayer) {
     
     //variable de contrôle de la structure
     bool running(true);
@@ -490,7 +497,8 @@ void parameter(sf::RenderWindow & app,
                              speedPaddle,
                              state_ball_x,
                              state_ball_y,
-                             points);
+                             points,
+                             superPlayer);
                         break;
                         
                     case 6:
@@ -623,7 +631,8 @@ void game(sf::RenderWindow& app,
           int SPEED_PADDLE_INIT,
           bool state_ball_x,
           bool state_ball_y,
-          const int score_limit) {
+          const int score_limit,
+          const bool superPlayer) {
     
     //déclaration des différentes variables
     int posXBall(BALL_POS_INIT.x), posYBall(BALL_POS_INIT.y);

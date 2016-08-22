@@ -17,6 +17,7 @@ public:
     Ball(sf::Vector2i position,
          int size,
          int speed);
+    ~Ball(void);
     
     void MoveX();
     void MoveY();
