@@ -35,7 +35,8 @@ void menu(sf::RenderWindow & app,
           const sf::Vector2f RIGHT_PADDLE_POS_INIT,
           const bool state_bool_x,
           const bool state_bool_y,
-          const bool superPlayer);
+          const bool superPlayer,
+          const sf::IpAddress adressServer);
 
 void game(sf::RenderWindow& app,
           sf::Event event,
@@ -52,7 +53,8 @@ void game(sf::RenderWindow& app,
           bool state_ball_x,
           bool state_ball_y,
           const int score_limit,
-          const bool superPlayer);
+          const bool superPlayer,
+          const sf::IpAddress adressServer);
 
 void parameter(sf::RenderWindow & app,
                sf::Event & event,
@@ -68,7 +70,8 @@ void parameter(sf::RenderWindow & app,
                const sf::Vector2f RIGHT_PADDLE_POS_INIT,
                const bool state_ball_x,
                const bool state_ball_y,
-               const bool superPlayer);
+               const bool superPlayer,
+               const sf::IpAddress adressServer);
 
 sf::Text createText(const sf::String & content,
                     const sf::Vector2f & position,
@@ -124,7 +127,6 @@ int main(int argc, char const *argv[]) {
     bool state_ball_x(getRand(0, 1)), state_balle_y(getRand(0, 1));
     
     //variable concernant le réseau
-    const unsigned short port(3600);
     const sf::IpAddress adress("127.0.0.1"); //no place lol
     
     
@@ -170,7 +172,8 @@ int main(int argc, char const *argv[]) {
          RIGHT_PADDLE_POS_INIT,
          state_ball_x,
          state_balle_y,
-         superPlayer);
+         superPlayer,
+         adress);
     app.close();
     
     return 0;
@@ -251,7 +254,8 @@ void menu(sf::RenderWindow & app,
           const sf::Vector2f RIGHT_PADDLE_POS_INIT,
           const bool state_bool_x,
           const bool state_bool_y,
-          const bool superPlayer) {
+          const bool superPlayer,
+          const sf::IpAddress adressServer) {
     
     //variable de choix au niveau du menu
     int choice(1);
@@ -323,7 +327,8 @@ void menu(sf::RenderWindow & app,
                                   RIGHT_PADDLE_POS_INIT,
                                   state_bool_x,
                                   state_bool_y,
-                                  superPlayer);
+                                  superPlayer,
+                                  adressServer);
                         break;
                         
                     case 2: //fermeture de la fermeture
@@ -393,7 +398,8 @@ void parameter(sf::RenderWindow & app,
                const sf::Vector2f RIGHT_PADDLE_POS_INIT,
                const bool state_ball_x,
                const bool state_ball_y,
-               const bool superPlayer) {
+               const bool superPlayer,
+               const sf::IpAddress adressServer) {
     
     //variable de contrôle de la structure
     bool running(true);
@@ -517,7 +523,8 @@ void parameter(sf::RenderWindow & app,
                              state_ball_x,
                              state_ball_y,
                              points,
-                             superPlayer);
+                             superPlayer,
+                             adressServer);
                         break;
                         
                     case 6:
@@ -651,7 +658,8 @@ void game(sf::RenderWindow& app,
           bool state_ball_x,
           bool state_ball_y,
           const int score_limit,
-          const bool superPlayer) {
+          const bool superPlayer,
+          const sf::IpAddress adressServer) {
     
     //déclaration des différentes variables
     int posXBall(BALL_POS_INIT.x), posYBall(BALL_POS_INIT.y);
@@ -661,13 +669,25 @@ void game(sf::RenderWindow& app,
     //variable de score
     int score1(0), score2(0);
     
+    //variable stockant le numéro de port à écouter
+    const unsigned short port(3600);
+    
     //création des différents objets
     Ball ball(BALL_POS_INIT, BALL_SIZE, BALL_SPEED);
     Bar LeftPaddle(LEFT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     Bar RightPaddle(RIGHT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     
     //création des éléments de réseaux (sockets TCP)
-    
+    if(superPlayer) {
+        sf::TcpListener server; //socket serveur
+        server.listen(port);
+        sf::TcpSocket socket; //socket permettant d'accepter une socket de la part du serveur
+        server.accept(socket);
+    }
+    else {
+        sf::TcpSocket socket;
+        socket.connect(adressServer, port);
+    }
     
     //variable concernant le nombre de bounce
     int counterBounce(0);
