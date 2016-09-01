@@ -34,7 +34,8 @@ void menu(sf::RenderWindow & app,
           const sf::Vector2f LEFT_PADDLE_POS_INIT,
           const sf::Vector2f RIGHT_PADDLE_POS_INIT,
           const bool state_bool_x,
-          const bool state_bool_y);
+          const bool state_bool_y,
+          const bool superPlayer);
 
 void game(sf::RenderWindow& app,
           sf::Event event,
@@ -50,7 +51,8 @@ void game(sf::RenderWindow& app,
           int SPEED_PADDLE_INIT,
           bool state_ball_x,
           bool state_ball_y,
-          const int score_limit);
+          const int score_limit,
+          const bool superPlayer);
 
 void parameter(sf::RenderWindow & app,
                sf::Event & event,
@@ -65,7 +67,8 @@ void parameter(sf::RenderWindow & app,
                const sf::Vector2f LEFT_PADDLE_POS_INIT,
                const sf::Vector2f RIGHT_PADDLE_POS_INIT,
                const bool state_ball_x,
-               const bool state_ball_y);
+               const bool state_ball_y,
+               const bool superPlayer);
 
 sf::Text createText(const sf::String & content,
                     const sf::Vector2f & position,
@@ -112,7 +115,7 @@ int main(int argc, char const *argv[]) {
     PADDLE_HEIGHT_INIT(500),
     PADDLE_WIDTH_INIT(20);
     
-    const sf::Vector2i  WINDOW_SIZE(2500, 1500),
+    const sf::Vector2i  WINDOW_SIZE(2400, 1500),
     BALL_POS_INIT(WINDOW_SIZE.x / 2, WINDOW_SIZE.y / 2);
     
     const sf::Vector2f  LEFT_PADDLE_POS_INIT(0, WINDOW_SIZE.y / 2 - PADDLE_WIDTH_INIT),
@@ -142,16 +145,16 @@ int main(int argc, char const *argv[]) {
     sf::Event event;
     
     //création des éléments réseaux
-    if(superPlayer) {
+    /*if(superPlayer) {
         sf::TcpListener server;
-        sf::TcpSocket socket;
+        sf::TcpSocket client;
         server.listen(port);
-        server.accept(socket);
+        server.accept(client);
     }
     else {
-        sf::TcpSocket socket;
-        socket.connect(adress, port);
-    }
+        sf::TcpSocket client;
+        client.connect(adress, port);
+    }*/
     
     menu(app,
          WINDOW_SIZE,
@@ -166,8 +169,8 @@ int main(int argc, char const *argv[]) {
          LEFT_PADDLE_POS_INIT,
          RIGHT_PADDLE_POS_INIT,
          state_ball_x,
-         state_balle_y);
-    
+         state_balle_y,
+         superPlayer);
     app.close();
     
     return 0;
@@ -247,7 +250,8 @@ void menu(sf::RenderWindow & app,
           const sf::Vector2f LEFT_PADDLE_POS_INIT,
           const sf::Vector2f RIGHT_PADDLE_POS_INIT,
           const bool state_bool_x,
-          const bool state_bool_y) {
+          const bool state_bool_y,
+          const bool superPlayer) {
     
     //variable de choix au niveau du menu
     int choice(1);
@@ -318,7 +322,8 @@ void menu(sf::RenderWindow & app,
                                   LEFT_PADDLE_POS_INIT,
                                   RIGHT_PADDLE_POS_INIT,
                                   state_bool_x,
-                                  state_bool_y);
+                                  state_bool_y,
+                                  superPlayer);
                         break;
                         
                     case 2: //fermeture de la fermeture
@@ -387,7 +392,8 @@ void parameter(sf::RenderWindow & app,
                const sf::Vector2f LEFT_PADDLE_POS_INIT,
                const sf::Vector2f RIGHT_PADDLE_POS_INIT,
                const bool state_ball_x,
-               const bool state_ball_y) {
+               const bool state_ball_y,
+               const bool superPlayer) {
     
     //variable de contrôle de la structure
     bool running(true);
@@ -510,7 +516,8 @@ void parameter(sf::RenderWindow & app,
                              speedPaddle,
                              state_ball_x,
                              state_ball_y,
-                             points);
+                             points,
+                             superPlayer);
                         break;
                         
                     case 6:
@@ -643,7 +650,8 @@ void game(sf::RenderWindow& app,
           int SPEED_PADDLE_INIT,
           bool state_ball_x,
           bool state_ball_y,
-          const int score_limit) {
+          const int score_limit,
+          const bool superPlayer) {
     
     //déclaration des différentes variables
     int posXBall(BALL_POS_INIT.x), posYBall(BALL_POS_INIT.y);
@@ -657,6 +665,9 @@ void game(sf::RenderWindow& app,
     Ball ball(BALL_POS_INIT, BALL_SIZE, BALL_SPEED);
     Bar LeftPaddle(LEFT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     Bar RightPaddle(RIGHT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
+    
+    //création des éléments de réseaux (sockets TCP)
+    
     
     //variable concernant le nombre de bounce
     int counterBounce(0);
@@ -816,6 +827,15 @@ void game(sf::RenderWindow& app,
     }
 }
 
+/*  -------------------------------------------------
+    *************************************************
+ 
+                    FONCTION TIMER
+ 
+    *************************************************
+    -------------------------------------------------
+*/
+
 sf::String getTimer(unsigned long timeStart, unsigned long nowTime) {
     unsigned int secondes(nowTime - timeStart);
     unsigned int minutes(0);
@@ -843,6 +863,15 @@ sf::String getTimer(unsigned long timeStart, unsigned long nowTime) {
     return sf::String(setTwoDigits(hours) + ":" + setTwoDigits(minutes) + ":" + setTwoDigits(secondes));
 }
 
+/*  -------------------------------------------------
+    *************************************************
+ 
+                    FONCTION 2 CHIFFRES
+ 
+    *************************************************
+    -------------------------------------------------
+ */
+
 sf::String setTwoDigits(unsigned int number) {
     sf::String value;
     if(number < 10) {
@@ -858,7 +887,7 @@ sf::String setTwoDigits(unsigned int number) {
 /*  -------------------------------------------------
     *************************************************
  
-            FONCTION GAME
+            FONCTION RANDOM
  
     *************************************************
     -------------------------------------------------
