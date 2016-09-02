@@ -5,8 +5,10 @@
 //  Created by Arnaud DE MATTEIS on 22/07/2016.
 //  Copyright © 2016 Arnaud DE MATTEIS. All rights reserved.
 //
-//  Developped with XCode on a
-//  MacBookPro with 16Gb of RAM
+//  Developped with XCode
+//
+//  Credits :
+//      * basic music : author : TheFatRat / name : Monody / link : https://www.youtube.com/watch?v=nw5Mc5bpq-A&index=11&list=RDi78U3VEAwK8
 //
 
 #include <cstdlib>
@@ -678,7 +680,7 @@ void game(sf::RenderWindow& app,
     Bar RightPaddle(RIGHT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     
     //création des éléments de réseaux (sockets TCP)
-    if(superPlayer) {
+    /*if(superPlayer) {
         sf::TcpListener server; //socket serveur
         server.listen(port);
         sf::TcpSocket socket; //socket permettant d'accepter une socket de la part du serveur
@@ -687,7 +689,7 @@ void game(sf::RenderWindow& app,
     else {
         sf::TcpSocket socket;
         socket.connect(adressServer, port);
-    }
+    }*/
     
     //variable concernant le nombre de bounce
     int counterBounce(0);
@@ -710,7 +712,7 @@ void game(sf::RenderWindow& app,
                                 200);
     
     sf::Text timer = createText("",
-                               sf::Vector2f(WINDOW_SIZE.x / 3, WINDOW_SIZE.y / 1.3),
+                               sf::Vector2f(WINDOW_SIZE.x / 2.4, WINDOW_SIZE.y / 1.1),
                                font,
                                75);
     
