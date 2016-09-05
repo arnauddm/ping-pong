@@ -36,7 +36,7 @@ void menu(sf::RenderWindow & app,
           const bool state_bool_y,
           const bool superPlayer);
 
-void game(sf::RenderWindow& app,
+void game(sf::RenderWindow & app,
           sf::Event event,
           sf::Font font,
           sf::Vector2i WINDOW_SIZE,
@@ -649,13 +649,19 @@ void game(sf::RenderWindow& app,
     
     //variable concernant le nombre de bounce
     int counterBounce(0);
+    int levelBounce(0);
+    
+    BALL_SPEED -= 1; //on soustrait un car la fonction pour faire augmenter la vitesse de balle ajoute un car le compteur de rebond et le degré de rebond sont à 0 ce qui fait que counterBounce = 10 * levelBounce soit 0 = 10 * 0
     
     
     //creation de la musique
     sf::Music musique;
-    if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/src/music/Sandstorm.ogg")) {
-        std::cout << "Le chargement de la musique a échoué." << std::endl;
-        return EXIT_FAILURE;
+    if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/user/music/main.ogg")) {
+        std::cout << "Le chargement de la musique a échoué." << std::endl << "Chargement de la musique de base." << std::endl;
+        if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/src/music/main.ogg")) {
+            std::cout << "Impossible d'ouvrir la musique de base. Fermeture du jeu" << std::endl;
+            return EXIT_FAILURE;
+        }
     }
     musique.setVolume(100);
     musique.setRelativeToListener(true);
@@ -681,6 +687,16 @@ void game(sf::RenderWindow& app,
                                        sf::Vector2f(WINDOW_SIZE.x - 100, 100),
                                        font,
                                        75);
+    
+    sf::Text bounceRemaining = createText("",
+                                          sf::Vector2f(WINDOW_SIZE.x / 1.2, WINDOW_SIZE.y / 1.1),
+                                          font,
+                                          50);
+    
+    sf::Text speed = createText("",
+                                sf::Vector2f(100, WINDOW_SIZE.y / 1.1),
+                                font,
+                                50);
     
     //variable de contrôle de la structure du jeu
     bool running(true);
@@ -718,6 +734,13 @@ void game(sf::RenderWindow& app,
         LeftPaddle.setPosition(posYLeftPaddle);
         //différents test pour détecter une collision
         if ((posXBall <= 0 && (posYBall < posYLeftPaddle || posYBall > posYLeftPaddle + PADDLE_HEIGHT))) {
+            BALL_SPEED = 1;
+            BALL_SPEED -= 1;
+            ball.mySpeed = 1;
+            ball.myDX = 1;
+            ball.myDY = 1;
+            counterBounce = 0;
+            levelBounce = 0;
             sleep(1);
             ball.restart(WINDOW_SIZE);
             posXBall = WINDOW_SIZE.x / 2;
@@ -726,6 +749,10 @@ void game(sf::RenderWindow& app,
         }
         
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+            BALL_SPEED = 1;
+            ball.setSpeed(BALL_SPEED);
+            counterBounce = 0;
+            levelBounce = 0;
             ball.restart(WINDOW_SIZE);
             posXBall = WINDOW_SIZE.x / 2;
             posYBall = WINDOW_SIZE.y / 2;
@@ -757,7 +784,8 @@ void game(sf::RenderWindow& app,
             posXBall -= BALL_SPEED;
         }
         
-        std::cout << posXBall << "   " << posYBall << std::endl;
+        //std::cout << posXBall << "   " << posYBall << std::endl; //view position of ball
+        std::cout << BALL_SPEED << "    |   " << ball.mySpeed << std::endl;
         sleep(0.5);
         //ColliManager.ManagerCollisionY(BALL_SIZE, posXBall, posYBall, posYLeftPaddle, PADDLE_HEIGHT, PADDLE_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH);
         //ColliManager.ManagerCollisionY(BALL_SIZE, posXBall, posYBall, posYRightPaddle, PADDLE_HEIGHT, PADDLE_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH);
@@ -789,9 +817,18 @@ void game(sf::RenderWindow& app,
             counterBounce = 0;
         }*/
         
+        if(counterBounce == 10 * levelBounce) {
+            BALL_SPEED++;
+            ball.setSpeed(BALL_SPEED);
+            counterBounce = 0;
+            levelBounce += 1;
+        }
+        
         timer.setString(getTimer(timeStart, time(NULL)));
         scorePlayer1.setString(toString(score1));
         scorePlayer2.setString(toString(score2));
+        bounceRemaining.setString(toString(10 * levelBounce - counterBounce));
+        speed.setString(toString(BALL_SPEED));
         
         app.clear();
         app.draw(ball);
@@ -801,6 +838,8 @@ void game(sf::RenderWindow& app,
         app.draw(timer);
         app.draw(scorePlayer1);
         app.draw(scorePlayer2);
+        app.draw(bounceRemaining);
+        app.draw(speed);
         app.display();
     }
 }
