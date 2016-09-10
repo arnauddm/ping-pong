@@ -680,7 +680,7 @@ void game(sf::RenderWindow& app,
     Bar RightPaddle(RIGHT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     
     //création des éléments de réseaux (sockets TCP)
-    /*if(superPlayer) {
+    if(superPlayer) {
         sf::TcpListener server; //socket serveur
         server.listen(port);
         sf::TcpSocket socket; //socket permettant d'accepter une socket de la part du serveur
@@ -689,7 +689,7 @@ void game(sf::RenderWindow& app,
     else {
         sf::TcpSocket socket;
         socket.connect(adressServer, port);
-    }*/
+    }
     
     //variable concernant le nombre de bounce
     int counterBounce(0);
