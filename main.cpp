@@ -5,8 +5,10 @@
 //  Created by Arnaud DE MATTEIS on 22/07/2016.
 //  Copyright © 2016 Arnaud DE MATTEIS. All rights reserved.
 //
-//  Developped with XCode on a
-//  MacBookPro with 16Gb of RAM
+//  Developped with XCode
+//
+//  Credits :
+//      * basic music : author : TheFatRat / name : Monody / link : https://www.youtube.com/watch?v=nw5Mc5bpq-A&index=11&list=RDi78U3VEAwK8
 //
 
 #include <cstdlib>
@@ -15,6 +17,7 @@
 #include <ctime>
 #include <iomanip>
 #include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
 #include "Ball.hpp"
 #include "bar.hpp"
 #include "collision_manager.hpp"
@@ -34,7 +37,8 @@ void menu(sf::RenderWindow & app,
           const sf::Vector2f RIGHT_PADDLE_POS_INIT,
           const bool state_bool_x,
           const bool state_bool_y,
-          const bool superPlayer);
+          const bool superPlayer,
+          const sf::IpAddress adressServer);
 
 void game(sf::RenderWindow & app,
           sf::Event event,
@@ -51,7 +55,8 @@ void game(sf::RenderWindow & app,
           bool state_ball_x,
           bool state_ball_y,
           const int score_limit,
-          const bool superPlayer);
+          const bool superPlayer,
+          const sf::IpAddress adressServer);
 
 void parameter(sf::RenderWindow & app,
                sf::Event & event,
@@ -67,7 +72,8 @@ void parameter(sf::RenderWindow & app,
                const sf::Vector2f RIGHT_PADDLE_POS_INIT,
                const bool state_ball_x,
                const bool state_ball_y,
-               const bool superPlayer);
+               const bool superPlayer,
+               const sf::IpAddress adressServer);
 
 sf::Text createText(const sf::String & content,
                     const sf::Vector2f & position,
@@ -90,6 +96,9 @@ sf::String getTimer(unsigned long timeStart, unsigned long nowTime);
 
 sf::String setTwoDigits(unsigned int number);
 
+int getRand(int mini,
+            int maxi);
+
 
 /*  -------------------------------------------------
     *************************************************
@@ -101,6 +110,9 @@ sf::String setTwoDigits(unsigned int number);
 */
 
 int main(int argc, char const *argv[]) {
+    //initialisation du random pour les nombres aléatoires
+    srand(time(NULL));
+    
     //déclaration des variables "constantes" de paramètres de jeu
     const int   BALL_SIZE_INIT(50),
     BALL_SPEED_INIT(1),
@@ -108,21 +120,23 @@ int main(int argc, char const *argv[]) {
     PADDLE_HEIGHT_INIT(500),
     PADDLE_WIDTH_INIT(20);
     
-    const sf::Vector2i  WINDOW_SIZE(2500, 1500),
+    const sf::Vector2i  WINDOW_SIZE(2400, 1500),
     BALL_POS_INIT(WINDOW_SIZE.x / 2, WINDOW_SIZE.y / 2);
     
     const sf::Vector2f  LEFT_PADDLE_POS_INIT(0, WINDOW_SIZE.y / 2 - PADDLE_WIDTH_INIT),
     RIGHT_PADDLE_POS_INIT(WINDOW_SIZE.x - PADDLE_WIDTH_INIT, WINDOW_SIZE.y / 2 - PADDLE_HEIGHT_INIT / 2);
     
-    bool    state_ball_x(false),
-    state_balle_y(false);
+    bool state_ball_x(getRand(0, 1)), state_balle_y(getRand(0, 1));
+    
+    //variable concernant le réseau
+    const sf::IpAddress adress("127.0.0.1"); //no place lol
     
     
     //définition de la police
     sf::Font font;
-    if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/user/font/font.ttf")) {
+    if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/ping-pong/ping-pong/user/font/font.ttf")) {
         std::cout << "Aucune police personnelles sous le nom de 'font.ttf' n'a été trouvée. Chargement de la police par défaut" << std::endl;
-        if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/src/font/font.ttf")) {
+        if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/ping-pong/ping-pong/src/font/font.ttf")) {
             std::cout << "Police par défaut non trouvée, fermeture du jeu" << std::endl;
             return EXIT_FAILURE;
         }
@@ -136,6 +150,18 @@ int main(int argc, char const *argv[]) {
     //création de la fenêtre
     sf::RenderWindow app(sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y), "Ping - Pong", sf::Style::Default);
     sf::Event event;
+    
+    //création des éléments réseaux
+    /*if(superPlayer) {
+        sf::TcpListener server;
+        sf::TcpSocket client;
+        server.listen(port);
+        server.accept(client);
+    }
+    else {
+        sf::TcpSocket client;
+        client.connect(adress, port);
+    }*/
     
     menu(app,
          WINDOW_SIZE,
@@ -151,7 +177,8 @@ int main(int argc, char const *argv[]) {
          RIGHT_PADDLE_POS_INIT,
          state_ball_x,
          state_balle_y,
-         superPlayer);
+         superPlayer,
+         adress);
     app.close();
     
     return 0;
@@ -232,7 +259,8 @@ void menu(sf::RenderWindow & app,
           const sf::Vector2f RIGHT_PADDLE_POS_INIT,
           const bool state_bool_x,
           const bool state_bool_y,
-          const bool superPlayer) {
+          const bool superPlayer,
+          const sf::IpAddress adressServer) {
     
     //variable de choix au niveau du menu
     int choice(1);
@@ -304,7 +332,8 @@ void menu(sf::RenderWindow & app,
                                   RIGHT_PADDLE_POS_INIT,
                                   state_bool_x,
                                   state_bool_y,
-                                  superPlayer);
+                                  superPlayer,
+                                  adressServer);
                         break;
                         
                     case 2: //fermeture de la fermeture
@@ -374,7 +403,8 @@ void parameter(sf::RenderWindow & app,
                const sf::Vector2f RIGHT_PADDLE_POS_INIT,
                const bool state_ball_x,
                const bool state_ball_y,
-               const bool superPlayer) {
+               const bool superPlayer,
+               const sf::IpAddress adressServer) {
     
     //variable de contrôle de la structure
     bool running(true);
@@ -498,7 +528,8 @@ void parameter(sf::RenderWindow & app,
                              state_ball_x,
                              state_ball_y,
                              points,
-                             superPlayer);
+                             superPlayer,
+                             adressServer);
                         break;
                         
                     case 6:
@@ -632,7 +663,8 @@ void game(sf::RenderWindow& app,
           bool state_ball_x,
           bool state_ball_y,
           const int score_limit,
-          const bool superPlayer) {
+          const bool superPlayer,
+          const sf::IpAddress adressServer) {
     
     //déclaration des différentes variables
     int posXBall(BALL_POS_INIT.x), posYBall(BALL_POS_INIT.y);
@@ -641,6 +673,9 @@ void game(sf::RenderWindow& app,
     
     //variable de score
     int score1(0), score2(0);
+    
+    //variable stockant le numéro de port à écouter
+    const unsigned short port(9800);
     
     //création des différents objets
     Ball ball(BALL_POS_INIT, BALL_SIZE, BALL_SPEED);
@@ -653,14 +688,15 @@ void game(sf::RenderWindow& app,
     
     BALL_SPEED -= 1; //on soustrait un car la fonction pour faire augmenter la vitesse de balle ajoute un car le compteur de rebond et le degré de rebond sont à 0 ce qui fait que counterBounce = 10 * levelBounce soit 0 = 10 * 0
     
+    sf::TcpSocket socket;
+    socket.connect(adressServer, port);
     
     //creation de la musique
     sf::Music musique;
-    if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/user/music/main.ogg")) {
+    if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/ping-pong/ping-pong/user/music/main.ogg")) {
         std::cout << "Le chargement de la musique a échoué." << std::endl << "Chargement de la musique de base." << std::endl;
-        if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/src/music/main.ogg")) {
-            std::cout << "Impossible d'ouvrir la musique de base. Fermeture du jeu" << std::endl;
-            return EXIT_FAILURE;
+        if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/ping-pong/ping-pong/src/music/main.ogg")) {
+            std::cout << "Impossible d'ouvrir la musique de base. Aucune musique ne sera jouée !" << std::endl;
         }
     }
     musique.setVolume(100);
@@ -674,7 +710,7 @@ void game(sf::RenderWindow& app,
                                 200);
     
     sf::Text timer = createText("",
-                               sf::Vector2f(WINDOW_SIZE.x / 3, WINDOW_SIZE.y / 1.3),
+                               sf::Vector2f(WINDOW_SIZE.x / 2.4, WINDOW_SIZE.y / 1.1),
                                font,
                                75);
     
@@ -844,6 +880,15 @@ void game(sf::RenderWindow& app,
     }
 }
 
+/*  -------------------------------------------------
+    *************************************************
+ 
+                    FONCTION TIMER
+ 
+    *************************************************
+    -------------------------------------------------
+*/
+
 sf::String getTimer(unsigned long timeStart, unsigned long nowTime) {
     unsigned int secondes(nowTime - timeStart);
     unsigned int minutes(0);
@@ -871,6 +916,15 @@ sf::String getTimer(unsigned long timeStart, unsigned long nowTime) {
     return sf::String(setTwoDigits(hours) + ":" + setTwoDigits(minutes) + ":" + setTwoDigits(secondes));
 }
 
+/*  -------------------------------------------------
+    *************************************************
+ 
+                    FONCTION 2 CHIFFRES
+ 
+    *************************************************
+    -------------------------------------------------
+ */
+
 sf::String setTwoDigits(unsigned int number) {
     sf::String value;
     if(number < 10) {
@@ -880,4 +934,19 @@ sf::String setTwoDigits(unsigned int number) {
         value = toString(number);
     }
     return value;
+}
+
+
+/*  -------------------------------------------------
+    *************************************************
+ 
+            FONCTION RANDOM
+ 
+    *************************************************
+    -------------------------------------------------
+*/
+
+int getRand(int mini,
+            int maxi) {
+    return rand() % (maxi - mini) + mini;
 }
