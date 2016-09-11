@@ -134,7 +134,7 @@ int main(int argc, char const *argv[]) {
     
     //définition de la police
     sf::Font font;
-    if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/font.ttf")) {
+    if(!font.loadFromFile("/Users/arnaud/Documents/dev/sfml/ping-pong/ping-pong/font.ttf")) {
         std::cout << "Erreur du chargement de la police...Fermeture du jeu !" << std::endl;
         return EXIT_FAILURE;
     }
@@ -679,25 +679,15 @@ void game(sf::RenderWindow& app,
     Bar LeftPaddle(LEFT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     Bar RightPaddle(RIGHT_PADDLE_POS_INIT, PADDLE_WIDTH, PADDLE_HEIGHT);
     
-    //création des éléments de réseaux (sockets TCP)
-    if(superPlayer) {
-        sf::TcpListener server; //socket serveur
-        server.listen(port);
-        sf::TcpSocket socket; //socket permettant d'accepter une socket de la part du serveur
-        server.accept(socket);
-    }
-    else {
-        sf::TcpSocket socket;
-        socket.connect(adressServer, port);
-    }
-    
     //variable concernant le nombre de bounce
     int counterBounce(0);
     
+    sf::TcpSocket socket;
+    socket.connect(adressServer, 9800);
     
     //creation de la musique
     sf::Music musique;
-    if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/projet_tut/ping-pong/ping-pong/Sandstorm.ogg")) {
+    if(!musique.openFromFile("/Users/arnaud/Documents/dev/sfml/ping-pong/ping-pong/Sandstorm.ogg")) {
         std::cout << "Le chargement de la musique a échoué." << std::endl;
         return EXIT_FAILURE;
     }
